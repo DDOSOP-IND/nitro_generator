@@ -2,11 +2,11 @@ import os
 import random
 import threading
 import requests
-from tkinter import Tk, Label, Entry, Button, scrolledtext, END
+from tkinter import Tk, Label, scrolledtext, END
 import time
 
 # Global variables
-generation_running = False
+generation_running = True
 console_lock = threading.Lock()
 
 # Ensure 'results' directory exists if it doesn't already
@@ -48,7 +48,7 @@ class Worker():
                     Console().printer("Invalid", self.code)
                 elif req.status_code == 429:
                     Console().printer("Rate Limited", self.code)
-                    time.sleep(int(delay_entry.get()))
+                    time.sleep(1)  # Adjust delay as needed
                 else:
                     Console().printer("Retry", self.code)
             except requests.exceptions.RequestException as e:
@@ -57,39 +57,16 @@ class Worker():
                     output_text.insert(END, f"Exception during request: {str(e)}\n")
                     output_text.see(END)
 
-def start_generation():
-    global generation_running
-    if not generation_running:
-        generation_running = True
-        threading.Thread(target=DNG.run).start()
-        status_label.config(text="Message generation started...", fg="blue")
-
-def stop_generation():
-    global generation_running
-    generation_running = False
-    status_label.config(text="Message generation stopped.", fg="orange")
-
 # Create main window
 root = Tk()
 root.title("Discord Nitro Generator")
 
 # Create and place widgets
-Label(root, text="Delay (seconds):").pack(pady=5)
-delay_entry = Entry(root, width=10)
-delay_entry.pack()
-delay_entry.insert(0, "0")  # Set delay to 0 seconds for minimal delay
-
 Label(root, text="Generated Codes:").pack(pady=5)
 output_text = scrolledtext.ScrolledText(root, width=50, height=10)
 output_text.pack(padx=10, pady=10)
 
-start_button = Button(root, text="Start Generation", command=start_generation)
-start_button.pack(pady=5)
-
-stop_button = Button(root, text="Stop Generation", command=stop_generation)
-stop_button.pack(pady=5)
-
-status_label = Label(root, text="", fg="black")
+status_label = Label(root, text="Generating codes...", fg="blue")
 status_label.pack(pady=5)
 
 # Banner ASCII Art
@@ -106,6 +83,9 @@ Label(root, text=banner, font=("Courier", 10), fg="purple").pack()
 # Initialize the console and worker
 console = Console()
 DNG = Worker()
+
+# Start generating codes automatically
+threading.Thread(target=DNG.run).start()
 
 # Start the Tkinter event loop
 root.mainloop()
