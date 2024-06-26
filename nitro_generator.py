@@ -9,18 +9,9 @@ from datetime import datetime
 generation_running = False
 console_lock = threading.Lock()
 
-# Ensure 'results' directory exists
-os.makedirs('results', exist_ok=True)
-
-# Banner text
-BANNER = """
-██████╗░██████╗░░█████╗░░██████╗░█████╗░██████╗░░░░░░░██╗███╗░░██╗██████╗░
-██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔══██╗░░░░░░██║████╗░██║██╔══██╗
-██║░░██║██║░░██║██║░░██║╚█████╗░██║░░██║██████╔╝█████╗██║██╔██╗██║██║░░██║
-██║░░██║██║░░██║██║░░██║░╚═══██╗██║░░██║██╔═══╝░╚════╝██║██║╚████║██║░░██║
-██████╔╝██████╔╝╚█████╔╝██████╔╝╚█████╔╝██║░░░░░░░░░░░██║██║░╚███║██████╔╝
-╚═════╝░╚═════╝░░╚════╝░╚═════╝░░╚════╝░╚═╝░░░░░░░░░░░╚═╝╚═╝░░╚══╝╚═════╝░
-"""
+# Ensure 'results' directory exists if it doesn't already
+if not os.path.exists('results'):
+    os.makedirs('results')
 
 class Console():
     def __init__(self):
@@ -108,7 +99,6 @@ root = Tk()
 root.title("Discord Nitro Generator")
 
 # Create and place widgets
-Label(root, text=BANNER).pack(pady=10)
 Label(root, text="Delay (seconds):").pack(pady=5)
 delay_entry = Entry(root, width=10)
 delay_entry.pack()
@@ -129,6 +119,17 @@ stop_button.pack(pady=5)
 
 status_label = Label(root, text="", fg="black")
 status_label.pack(pady=5)
+
+# Banner ASCII Art
+banner = """
+██████╗░██████╗░░█████╗░░██████╗░█████╗░██████╗░░░░░░░██╗███╗░░██╗██████╗░
+██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔══██╗░░░░░░██║████╗░██║██╔══██╗
+██║░░██║██║░░██║██║░░██║╚█████╗░██║░░██║██████╔╝█████╗██║██╔██╗██║██║░░██║
+██║░░██║██║░░██║██║░░██║░╚═══██╗██║░░██║██╔═══╝░╚════╝██║██║╚████║██║░░██║
+██████╔╝██████╔╝╚█████╔╝██████╔╝╚█████╔╝██║░░░░░░░░░░░██║██║░╚███║██████╔╝
+╚═════╝░╚═════╝░░╚════╝░╚═════╝░░╚════╝░╚═╝░░░░░░░░░░░╚═╝╚═╝░░╚══╝╚═════╝░
+"""
+Label(root, text=banner, font=("Courier", 10)).pack()
 
 # Initialize the console and worker
 console = Console()
