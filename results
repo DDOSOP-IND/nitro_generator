@@ -1,8 +1,0 @@
-import os
-
-# Ensure 'results' directory exists if it doesn't already
-if not os.path.exists('results'):
-    os.makedirs('results')
-
-# Now continue with the rest of your script
-# Place your main logic and other functions/classes below
