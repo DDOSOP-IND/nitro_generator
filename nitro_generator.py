@@ -1,105 +1,69 @@
-import os
 import random
+import string
 import threading
-import requests
-from tkinter import Tk, Label, scrolledtext, Button, END
+import tkinter as tk
+from tkinter import scrolledtext
 import time
+
+# Function to generate a random Discord Nitro code
+def generate_code():
+    code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))
+    return code
 
 # Global variables
 generation_running = False
 console_lock = threading.Lock()
 
-# Ensure 'results' directory exists if it doesn't already
-if not os.path.exists('results'):
-    os.makedirs('results')
-
-class Console():
-    def __init__(self):
-        self.generated_codes_file = 'results/generated_codes.txt'
-
-    def printer(self, status, code):
-        with console_lock:
-            output_text.insert(END, f"{status} > discord.gift/{code}\n")
-            output_text.see(END)
-            output_text.update()
-        
-        # Save generated code to file
-        with open(self.generated_codes_file, 'a+') as f:
-            f.write(f"discord.gift/{code}\n")
-
-class Worker():
-    def run(self):
-        global generation_running
-        while generation_running:
-            self.code = "".join(random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") for _ in range(16))
-            Console().printer("Generated", self.code)  # Log generated code
-            try:
-                req = requests.get(
-                    f'https://discordapp.com/api/v6/entitlements/gift-codes/{self.code}?with_application=false&with_subscription_plan=true',
-                    timeout=1,
-                    verify=False
-                )
-                if req.status_code == 200:
-                    Console().printer("Valid", self.code)
-                    with open('results/hit.txt', 'a+') as f:
-                        f.write(self.code + "\n")
-                elif req.status_code == 404:
-                    Console().printer("Invalid", self.code)
-                elif req.status_code == 429:
-                    Console().printer("Rate Limited", self.code)
-                    time.sleep(1)  # Adjust delay as needed
-                else:
-                    Console().printer("Retry", self.code)
-            except requests.exceptions.RequestException as e:
-                Console().printer("Error", self.code)
-                with console_lock:
-                    output_text.insert(END, f"Exception during request: {str(e)}\n")
-                    output_text.see(END)
-
+# Function to start generating codes
 def start_generation():
     global generation_running
     if not generation_running:
         generation_running = True
-        threading.Thread(target=DNG.run).start()
-        status_label.config(text="Message generation started...", fg="blue")
+        threading.Thread(target=generate_codes_thread).start()
+        status_label.config(text="Generating codes...", fg="blue")
 
+# Function to stop generating codes
 def stop_generation():
     global generation_running
     generation_running = False
-    status_label.config(text="Message generation stopped.", fg="orange")
+    status_label.config(text="Generation stopped.", fg="orange")
+
+# Function to generate codes in a separate thread
+def generate_codes_thread():
+    global generation_running
+    while generation_running:
+        code = generate_code()
+        console_printer(f"Generated: discord.gift/{code}")
+        save_to_file(f"discord.gift/{code}")
+        time.sleep(1)  # Adjust delay as needed
+
+# Function to print to console
+def console_printer(message):
+    with console_lock:
+        output_text.insert(tk.END, f"{message}\n")
+        output_text.see(tk.END)
+
+# Function to save generated codes to file
+def save_to_file(code):
+    with open('generated_codes.txt', 'a+') as file:
+        file.write(f"{code}\n")
 
 # Create main window
-root = Tk()
+root = tk.Tk()
 root.title("Discord Nitro Generator")
 
 # Create and place widgets
-Label(root, text="Generated Codes:").pack(pady=5)
-output_text = scrolledtext.ScrolledText(root, width=50, height=10)
-output_text.pack(padx=10, pady=10)
-
-start_button = Button(root, text="Start Generation", command=start_generation)
+start_button = tk.Button(root, text="Start Generation", command=start_generation)
 start_button.pack(pady=5)
 
-stop_button = Button(root, text="Stop Generation", command=stop_generation)
+stop_button = tk.Button(root, text="Stop Generation", command=stop_generation)
 stop_button.pack(pady=5)
 
-status_label = Label(root, text="", fg="black")
+status_label = tk.Label(root, text="", fg="black")
 status_label.pack(pady=5)
 
-# Banner ASCII Art
-banner = """
-██████╗░██████╗░░█████╗░░██████╗░█████╗░██████╗░░░░░░░██╗███╗░░██╗██████╗░
-██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔══██╗░░░░░░██║████╗░██║██╔══██╗
-██║░░██║██║░░██║██║░░██║╚█████╗░██║░░██║██████╔╝█████╗██║██╔██╗██║██║░░██║
-██║░░██║██║░░██║██║░░██║░╚═══██╗██║░░██║██╔═══╝░╚════╝██║██║╚████║██║░░██║
-██████╔╝██████╔╝╚█████╔╝██████╔╝╚█████╔╝██║░░░░░░░░░░░██║██║░╚███║██████╔╝
-╚═════╝░╚═════╝░░╚════╝░╚═════╝░░╚════╝░╚═╝░░░░░░░░░░░╚═╝╚═╝░░╚══╝╚═════╝░
-"""
-Label(root, text=banner, font=("Courier", 10), fg="purple").pack()
-
-# Initialize the console and worker
-console = Console()
-DNG = Worker()
+output_text = scrolledtext.ScrolledText(root, width=50, height=10)
+output_text.pack(padx=10, pady=10)
 
 # Start the Tkinter event loop
 root.mainloop()
