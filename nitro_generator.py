@@ -2,7 +2,7 @@ import os
 import random
 import threading
 import requests
-from tkinter import Tk, Label, scrolledtext, END
+from tkinter import Tk, Label, scrolledtext, Button, END
 import time
 
 # Global variables
@@ -43,7 +43,6 @@ class Worker():
                     Console().printer("Valid", self.code)
                     with open('results/hit.txt', 'a+') as f:
                         f.write(self.code + "\n")
-                    # Webhook integration can be added here if needed
                 elif req.status_code == 404:
                     Console().printer("Invalid", self.code)
                 elif req.status_code == 429:
