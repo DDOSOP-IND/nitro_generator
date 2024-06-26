@@ -5,14 +5,14 @@ import tkinter as tk
 from tkinter import scrolledtext
 import time
 
+# Global variables
+generation_running = False
+console_lock = threading.Lock()
+
 # Function to generate a random Discord Nitro code
 def generate_code():
     code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))
     return code
-
-# Global variables
-generation_running = False
-console_lock = threading.Lock()
 
 # Function to start generating codes
 def start_generation():
@@ -48,11 +48,31 @@ def save_to_file(code):
     with open('generated_codes.txt', 'a+') as file:
         file.write(f"{code}\n")
 
+# Function to animate the banner
+def animate_banner():
+    global banner_text
+    banner_label.config(text=banner_text)
+    banner_text = banner_text[1:] + banner_text[0]  # Rotate the text
+    banner_label.after(200, animate_banner)  # Adjust speed of animation (milliseconds)
+
 # Create main window
 root = tk.Tk()
 root.title("Discord Nitro Generator")
 
+# Initial banner text
+banner_text = """
+██████╗░██████╗░░█████╗░░██████╗░█████╗░██████╗░░░░░░░██╗███╗░░██╗██████╗░
+██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔══██╗░░░░░░██║████╗░██║██╔══██╗
+██║░░██║██║░░██║██║░░██║╚█████╗░██║░░██║██████╔╝█████╗██║██╔██╗██║██║░░██║
+██║░░██║██║░░██║██║░░██║░╚═══██╗██║░░██║██╔═══╝░╚════╝██║██║╚████║██║░░██║
+██████╔╝██████╔╝╚█████╔╝██████╔╝╚█████╔╝██║░░░░░░░░░░░██║██║░╚███║██████╔╝
+╚═════╝░╚═════╝░░╚════╝░╚═════╝░░╚════╝░╚═╝░░░░░░░░░░░╚═╝╚═╝░░╚══╝╚═════╝░
+"""
+
 # Create and place widgets
+banner_label = tk.Label(root, font=("Courier", 10), fg="purple")  # Setting text color to purple
+banner_label.pack(pady=10)
+
 start_button = tk.Button(root, text="Start Generation", command=start_generation)
 start_button.pack(pady=5)
 
@@ -64,6 +84,12 @@ status_label.pack(pady=5)
 
 output_text = scrolledtext.ScrolledText(root, width=50, height=10)
 output_text.pack(padx=10, pady=10)
+
+# Initialize banner text
+banner_text = banner_text.strip().splitlines()
+
+# Start banner animation
+animate_banner()
 
 # Start the Tkinter event loop
 root.mainloop()
