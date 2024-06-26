@@ -3,7 +3,7 @@ import random
 import threading
 import requests
 from tkinter import Tk, Label, Entry, Button, scrolledtext, END
-from datetime import datetime
+import time
 
 # Global variables
 generation_running = False
@@ -92,10 +92,6 @@ stop_button.pack(pady=5)
 status_label = Label(root, text="", fg="black")
 status_label.pack(pady=5)
 
-# Initialize the console and worker
-console = Console()
-DNG = Worker()
-
 # Banner ASCII Art
 banner = """
 ██████╗░██████╗░░█████╗░░██████╗░█████╗░██████╗░░░░░░░██╗███╗░░██╗██████╗░
@@ -106,6 +102,10 @@ banner = """
 ╚═════╝░╚═════╝░░╚════╝░╚═════╝░░╚════╝░╚═╝░░░░░░░░░░░╚═╝╚═╝░░╚══╝╚═════╝░
 """
 Label(root, text=banner, font=("Courier", 10), fg="purple").pack()
+
+# Initialize the console and worker
+console = Console()
+DNG = Worker()
 
 # Start the Tkinter event loop
 root.mainloop()
