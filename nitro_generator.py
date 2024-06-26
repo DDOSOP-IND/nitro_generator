@@ -48,18 +48,14 @@ def save_to_file(code):
     with open('generated_codes.txt', 'a+') as file:
         file.write(f"{code}\n")
 
-# Function to animate the banner
-def animate_banner():
-    global banner_text
-    banner_label.config(text=banner_text)
-    banner_text = banner_text[1:] + banner_text[0]  # Rotate the text
-    banner_label.after(200, animate_banner)  # Adjust speed of animation (milliseconds)
-
 # Create main window
 root = tk.Tk()
 root.title("Discord Nitro Generator")
 
-# Initial banner text (as a string)
+# Styling the GUI
+root.configure(bg='#36393f')  # Set background color to Discord dark mode color
+
+# Static banner text
 banner_text = """
 ██████╗░██████╗░░█████╗░░██████╗░█████╗░██████╗░░░░░░░██╗███╗░░██╗██████╗░
 ██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔══██╗░░░░░░██║████╗░██║██╔══██╗
@@ -70,26 +66,20 @@ banner_text = """
 """
 
 # Create and place widgets
-banner_label = tk.Label(root, font=("Courier", 10), fg="purple")  # Setting text color to purple
+banner_label = tk.Label(root, text=banner_text, font=("Courier", 10), fg="purple", bg='#36393f')  # Set text color to purple and background to Discord dark mode color
 banner_label.pack(pady=10)
 
-start_button = tk.Button(root, text="Start Generation", command=start_generation)
+start_button = tk.Button(root, text="Start Generation", bg='#7289da', fg='white', padx=10, pady=5, font=("Helvetica", 12, "bold"), command=start_generation)  # Styling start button with Discord's primary color
 start_button.pack(pady=5)
 
-stop_button = tk.Button(root, text="Stop Generation", command=stop_generation)
+stop_button = tk.Button(root, text="Stop Generation", bg='#f04747', fg='white', padx=10, pady=5, font=("Helvetica", 12, "bold"), command=stop_generation)  # Styling stop button with Discord's red color
 stop_button.pack(pady=5)
 
-status_label = tk.Label(root, text="", fg="black")
+status_label = tk.Label(root, text="", fg="white", bg='#36393f', font=("Helvetica", 10))  # Set text color to white and background to Discord dark mode color
 status_label.pack(pady=5)
 
-output_text = scrolledtext.ScrolledText(root, width=50, height=10)
+output_text = scrolledtext.ScrolledText(root, width=50, height=10, bg='#2c2f33', fg='white', font=("Courier", 10))  # Styling output text area with Discord dark mode color scheme
 output_text.pack(padx=10, pady=10)
-
-# Initialize banner text (as a string)
-banner_text = banner_text.strip()
-
-# Start banner animation
-animate_banner()
 
 # Start the Tkinter event loop
 root.mainloop()
