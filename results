@@ -1,0 +1,4 @@
+import os
+
+# Ensure 'results' directory exists
+os.makedirs('results', exist_ok=True)
