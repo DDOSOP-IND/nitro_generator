@@ -59,7 +59,7 @@ def animate_banner():
 root = tk.Tk()
 root.title("Discord Nitro Generator")
 
-# Initial banner text
+# Initial banner text (as a string)
 banner_text = """
 ██████╗░██████╗░░█████╗░░██████╗░█████╗░██████╗░░░░░░░██╗███╗░░██╗██████╗░
 ██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔══██╗░░░░░░██║████╗░██║██╔══██╗
@@ -85,8 +85,8 @@ status_label.pack(pady=5)
 output_text = scrolledtext.ScrolledText(root, width=50, height=10)
 output_text.pack(padx=10, pady=10)
 
-# Initialize banner text
-banner_text = banner_text.strip().splitlines()
+# Initialize banner text (as a string)
+banner_text = banner_text.strip()
 
 # Start banner animation
 animate_banner()
